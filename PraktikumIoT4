@@ -1,0 +1,42 @@
+from gpio import *
+from time import *
+
+def main():
+    # Konfigurasi pin
+    motion_pin = 0   # Pin 0 digunakan untuk sensor gerak
+    lamp_pin = 1     # Pin 1 digunakan untuk lampu
+    garage_door_pin = 2  # Pin 2 digunakan untuk pintu garasi
+
+    pinMode(motion_pin, IN)
+    pinMode(lamp_pin, OUT)
+    pinMode(garage_door_pin, OUT)
+
+    print("Sistem siap")
+    try:
+        while True:
+            # Baca nilai sensor gerak
+            motion_detected = digitalRead(motion_pin)
+
+            # Jika sensor mendeteksi gerakan, nyalakan lampu dan buka pintu garasi
+            if motion_detected:
+                digitalWrite(lamp_pin, HIGH)     # Nyalakan lampu
+                digitalWrite(garage_door_pin, HIGH)  # Buka pintu garasi
+                print("Sensor mendeteksi gerakan, lampu dinyalakan, pintu garasi dibuka")
+            else:
+                digitalWrite(lamp_pin, LOW)      # Matikan lampu
+                digitalWrite(garage_door_pin, LOW)   # Tutup pintu garasi
+                print("Sensor tidak mendeteksi gerakan, lampu dimatikan, pintu garasi ditutup")
+
+            # Waktu jeda sebelum membaca sensor lagi
+            sleep(5.0)
+
+    except KeyboardInterrupt:
+        # Tangkap penekanan Ctrl+C untuk keluar dengan aman
+        print("Program dihentikan.")
+    finally:
+        # Matikan lampu dan tutup pintu garasi sebelum keluar
+        digitalWrite(lamp_pin, LOW)
+        digitalWrite(garage_door_pin, LOW)
+
+if __name__ == "__main__":
+    main()
